@@ -79,12 +79,11 @@ def adopt(mother, baby):
 
 
 def triangulate(in_mat):
-	corr = corr_size(in_mat)
 	in_mat = column_clear(in_mat)			#do the outside
-	sub_mat = column_clear(baby_mat(in_mat))	#do the baby
+	sub_mat = baby_mat(in_mat)			#take the baby
 
-	if corr > 2:					#if not the smallest, then keep going down
-		sub_mat = triangulate(sub_mat)
+	if corr_size(in_mat) > 2:			#if not the smallest, then triangulate baby
+		sub_mat = triangulate(sub_mat)		#baby is now 2x3, so let 3x4 adopt it
 	
 	in_mat = adopt(in_mat, sub_mat)			#adopt the baby
 	return in_mat
