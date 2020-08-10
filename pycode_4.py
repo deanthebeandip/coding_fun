@@ -77,7 +77,6 @@ def adopt(mother, baby):
 			sub_mat.append(mother[i]) 
 	return sub_mat
 
-
 def triangulate(in_mat):
 	in_mat = column_clear(in_mat)			#do the outside
 	sub_mat = baby_mat(in_mat)			#take the baby
@@ -94,9 +93,42 @@ def normalize(in_mat):
 
 	for i in range(corr):
 		in_mat = rowchange(in_mat, 1/(in_mat[i*(corr+1) + (i)]) , i + 1, 1)
-
-
 	return in_mat
+
+def row_clear(in_mat):
+	corr = corr_size(in_mat)
+	for i in range(corr - 1):
+		sub_value = in_mat[i+1]
+		in_mat = rowmurder(in_mat, 1, i+2, sub_value)
+	
+	sub_mat = baby_mat(in_mat)
+	if corr > 2:
+		sub_mat = row_clear(sub_mat)
+
+	in_mat = adopt(in_mat, sub_mat)
+	return in_mat
+
+def round(x): #round the small or weird numbers
+	if x == -0:
+		return 0
+	elif (x > 0.9999999999) and (x < 1):
+		return 1
+	elif (x < 0.0000000001 ) and (x >0):
+		return 0
+	else:
+		return x
+
+def mat_round(in_mat):
+	sub_mat = []
+	for i in range(len(in_mat)):
+		sub_mat.append(round(in_mat[i]))
+	return sub_mat
+
+
+#Finally I can use RREF now...
+def rref(in_mat):
+	return (mat_round(row_clear(normalize(triangulate(in_mat)))))
+
 
 def mat_print(in_mat):
 	corr = corr_size(in_mat)
@@ -105,19 +137,30 @@ def mat_print(in_mat):
 		if ((i+1)% ( corr + 1)) == 0:
 			print(' ')
 
-########################## TESTING_BENCH ##########################
+########################## TESTING_BENCH  #########################
 
 #mat = [1, 2, 3, 4, 5, 6, 7, 8, 20]
 #mat = [1, 1, 2, 3, 4, 5]
-#mat = [1, 5, 6, 8, 	2, 9, 5, 6, 	3, 4, 5, 6]
-#mat = [1, 2, 0, 4, 5,  6, 7, 8, 9, 10,  11, 12, 13, 14, 15, 0]
-mat = [10, 5, 6, 5, 9, 	2, 6, 5, 5, 9, 	5, 7, 5, 7, 9,	 8, 6, 5, 6, 9]
+mat1 = [1, 5, 6, 8, 	2, 9, 5, 6, 	3, 4, 5, 6]
+mat2 = [10, 5, 46, 5, 9, 	2, 5, 1, -59, 9, 	5, 6, 30, 7, 9,	 8, 14, 5, 6, 12]
 
-print('\nOriginal:')
-mat_print(mat)
+########################## PRINTING_BENCH #########################
 
-print('\nChanged:')
-mat_print(normalize(triangulate(mat)))
+print('\nOriginal 3x4:')
+mat_print(mat1)
+
+print('\nRREF 3x4:')
+mat_print(rref(mat1))
+
+
+
+print('\nOriginal 4x5:')
+mat_print(mat2)
+
+print('\nRREF 4x5:')
+mat_print(rref(mat2))
+
+
 
 
 
